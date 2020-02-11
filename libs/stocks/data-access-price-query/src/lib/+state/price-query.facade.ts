@@ -11,8 +11,8 @@ export class PriceQueryFacade {
   priceQueries$ = this.store.pipe(
     select(getAllPriceQueries),
     skip(1),
-    map(priceQueries =>
-      priceQueries.map(priceQuery => [priceQuery.date, priceQuery.close])
+    map(priceQueries => //modified to show low and high values in the chart if 1m is selected
+      priceQueries.map(priceQuery => [priceQuery.date, priceQuery.close, priceQuery.low, priceQuery.high])
     )
   );
 

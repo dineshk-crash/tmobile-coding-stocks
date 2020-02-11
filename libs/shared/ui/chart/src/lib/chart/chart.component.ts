@@ -5,7 +5,7 @@ import {
   Input,
   OnInit
 } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'coding-challenge-chart',
@@ -15,6 +15,7 @@ import { Observable } from 'rxjs';
 export class ChartComponent implements OnInit {
   @Input() data$: Observable<any>;
   chartData: any;
+  prd:string;
 
   chart: {
     title: string;
@@ -25,6 +26,10 @@ export class ChartComponent implements OnInit {
   };
   constructor(private cd: ChangeDetectorRef) {}
 
+  @Input('period') set period(dt: string) {
+    this.prd = dt; console.log('period in chart', this.prd);
+  }
+
   ngOnInit() {
     this.chart = {
       title: '',
@@ -34,6 +39,15 @@ export class ChartComponent implements OnInit {
       options: { title: `Stock price`, width: '600', height: '400' }
     };
 
-    this.data$.subscribe(newData => (this.chartData = newData));
+    this.data$.subscribe(newData => {
+      if (this.prd === '1m') { // if 1m time period is selected...modify the chart columns and data
+        this.chart.columnNames = ['period', 'close', 'low', 'high'];
+        this.chartData = newData;
+      } else {
+        this.chart.columnNames = ['period', 'close'];
+        this.chartData = newData.map(data => [data[0], data[1]]);
+        console.log(this.chartData);
+      }
+    });
   }
 }
