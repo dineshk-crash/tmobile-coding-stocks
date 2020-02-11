@@ -35,10 +35,8 @@ export class StocksComponent implements OnInit {
   ngOnInit() {}
 
   fetchQuote() {
-    if (this.stockPickerForm.valid) {
       const { symbol, period } = this.stockPickerForm.value;
       this.period = period;
       this.priceQuery.fetchQuote(symbol, period);
-    }
   }
 }
