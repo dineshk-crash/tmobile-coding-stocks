@@ -2,7 +2,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Input,
+  Input, OnDestroy,
   OnInit
 } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
@@ -12,10 +12,12 @@ import { Observable, Subscription } from 'rxjs';
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']
 })
-export class ChartComponent implements OnInit {
+export class ChartComponent implements OnInit, OnDestroy {
   @Input() data$: Observable<any>;
   chartData: any;
   prd:string;
+
+  private subscription: Subscription;
 
   chart: {
     title: string;
@@ -39,7 +41,7 @@ export class ChartComponent implements OnInit {
       options: { title: `Stock price`, width: '600', height: '400' }
     };
 
-    this.data$.subscribe(newData => {
+    this.subscription = this.data$.subscribe(newData => {
       if (this.prd === '1m') { // if 1m time period is selected...modify the chart columns and data
         this.chart.columnNames = ['period', 'close', 'low', 'high'];
         this.chartData = newData;
@@ -49,5 +51,9 @@ export class ChartComponent implements OnInit {
         console.log(this.chartData);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }
