@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PriceQueryFacade } from '@coding-challenge/stocks/data-access-price-query';
+import { MatDatepickerInputEvent } from '@angular/material';
 
 @Component({
   selector: 'coding-challenge-stocks',
@@ -13,6 +14,10 @@ export class StocksComponent implements OnInit {
   period: string;
 
   quotes$ = this.priceQuery.priceQueries$;
+
+  fromMaxDate: Date = new Date();
+  toMaxDate: Date = new Date();
+  toMinDate: Date;
 
   timePeriods = [
     { viewValue: 'All available data', value: 'max' },
@@ -28,7 +33,9 @@ export class StocksComponent implements OnInit {
   constructor(private fb: FormBuilder, private priceQuery: PriceQueryFacade) {
     this.stockPickerForm = fb.group({
       symbol: [null, Validators.required],
-      period: [null, Validators.required]
+      period: [null, Validators.required],
+      fromDate: [null],
+      toDate: [null]
     });
   }
 
@@ -43,6 +50,19 @@ export class StocksComponent implements OnInit {
         this.fetchQuote();
       }
     });
+  }
+
+  onFormDateChange(event: MatDatepickerInputEvent<Date>) {
+    console.log(event);
+    const toDateVal = this.stockPickerForm.get('toDate').value;
+    if (event.value === null) {
+      this.toMinDate = null;
+    } else if (event.value !== null && toDateVal !== null && event.value > toDateVal) {
+      this.stockPickerForm.get('toDate').setValue(event.value);
+      this.toMinDate = new Date(event.value);
+    } else {
+      this.toMinDate = new Date(event.value);
+    }
   }
 
   fetchQuote() {

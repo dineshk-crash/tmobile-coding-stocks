@@ -29,6 +29,20 @@
     </mat-select>
   </mat-form-field>
 
+  <mat-form-field>
+    <mat-label>From</mat-label>
+    <input matInput [matDatepicker]="fromPicker" [max]="fromMaxDate" formControlName="fromDate"
+           aria-label="From date" (dateChange)="onFormDateChange($event)">
+    <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+    <mat-datepicker #fromPicker></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>To</mat-label>
+    <input aria-label="to date" matInput [matDatepicker]="toPicker" [max]="toMaxDate" [min]="toMinDate" formControlName="toDate">
+    <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+    <mat-datepicker #toPicker></mat-datepicker>
+  </mat-form-field>
+
   <button aria-label="fetch quotes for selected time period" #goBtn
           (click)="fetchQuote()" mat-raised-button [disabled]="!stockPickerForm.valid">Go</button>
 </form>
